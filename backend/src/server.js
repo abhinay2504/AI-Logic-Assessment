@@ -85,7 +85,7 @@ app.get('/api/inquiries', requireAdmin, async (req, res, next) => {
   if (category) { values.push(category); clauses.push(`category = $${values.length}`); }
   if (userType) { values.push(userType); clauses.push(`user_type = $${values.length}`); }
   if (status) { values.push(status); clauses.push(`status = $${values.length}`); }
-  if (q) { values.push(`%${q.replace(/[\\%_]/g, '\\$&')}%`); clauses.push(`(name ILIKE $${values.length} ESCAPE '\\\\' OR phone ILIKE $${values.length} ESCAPE '\\\\')`); }
+  if (q) { values.push(`%${q}%`); clauses.push(`(name ILIKE $${values.length} OR phone ILIKE $${values.length})`); }
   const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
   try {
     const count = await pool.query(`SELECT COUNT(*)::int AS total FROM inquiries ${where}`, values);
